@@ -12,10 +12,19 @@ const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
   },
 });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const PORT = 3000;
@@ -55,7 +64,15 @@ const initializeCrawl = (
   socket
 ) => {
   try {
+    // Reset data structures for a new crawl
+    discoveredDomains.clear();
+    visitedUrls.clear();
+    urlQueue.length = 0;
+
+    // Initialize queue with the starting URL
     urlQueue.push({ url: startingUrl, depth: 0 });
+
+    // Start crawling
     crawlUrls(maxDomains, maxDepth, socket);
   } catch (error) {
     console.error('Error initializing crawl:', error);
@@ -67,21 +84,23 @@ const crawlUrls = async (maxDomains, maxDepth, socket) => {
     const { url, depth } = urlQueue.shift();
     if (depth > maxDepth) continue;
     try {
-      await crawlUrl(url, depth, socket);
+      await crawlUrl(url, depth, socket, maxDomains);
     } catch (error) {
       console.error(`Error crawling URL ${url}:`, error);
     }
   }
+  console.log('Crawl completed or maxDomains limit reached.');
 };
 
-const crawlUrl = async (url, depth, socket) => {
-  if (visitedUrls.has(url)) return;
+const crawlUrl = async (url, depth, socket, maxDomains) => {
+  if (visitedUrls.has(url) || discoveredDomains.size >= maxDomains) return;
   visitedUrls.add(url);
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
     const baseUrl = new URL(url);
     $('a').each((index, element) => {
+      if (discoveredDomains.size >= maxDomains) return;
       const href = $(element).attr('href');
       if (href) {
         const fullUrl = new URL(href, baseUrl.origin).href;
