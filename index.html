@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Crawler Client</title>
+    <!-- CDN links for dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #domainsList {
+        margin-top: 20px;
+      }
+      .domain {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Web Crawler Client</h1>
+    <form id="crawlerForm">
+      <label for="startingUrl">Starting URL:</label>
+      <input
+        type="text"
+        id="startingUrl"
+        name="startingUrl"
+        value="http://brave.com,http://search.brave.com"
+      /><br /><br />
+
+      <label for="maxDomains">Max Domains:</label>
+      <input
+        type="number"
+        id="maxDomains"
+        name="maxDomains"
+        value="20"
+      /><br /><br />
+
+      <label for="maxDeep">Max Deep:</label>
+      <input type="number" id="maxDeep" name="maxDeep" value="2" /><br /><br />
+
+      <label for="mode">Mode:</label>
+      <input type="radio" id="testMode" name="mode" value="test" checked /> Test
+      <input type="radio" id="liveMode" name="mode" value="live" />
+      Live<br /><br />
+
+      <button type="button" id="startCrawl">Start Crawl</button>
+    </form>
+    <div id="domainsList">
+      <h2>Domains Found:</h2>
+    </div>
+    <script src="client.js"></script>
+  </body>
+</html>
