@@ -1,4 +1,4 @@
-This is a simple vanilla web crawler which has a server and client. The client sends a request to the server to crawl domain(s) and the server responds via websocket.io with a list of domains crawled based on input parameters.
+This is a simple vanilla web crawler which has a server and client. The client sends a request to the server to crawl domain(s) and the server responds via socket.io with a list of domains crawled based on input parameters.
 
 This was promted to and written by ChatGPT Code Copilot on 6/1/2024
 
